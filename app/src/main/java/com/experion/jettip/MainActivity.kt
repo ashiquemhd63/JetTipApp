@@ -13,20 +13,26 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.experion.jettip.components.InputField
 import com.experion.jettip.ui.theme.JetTipTheme
 
 class MainActivity : ComponentActivity() {
@@ -36,7 +42,11 @@ class MainActivity : ComponentActivity() {
 
             // A surface container using the 'background' color from the theme
             MyApp {
-                TopHeader()
+                Column() {
+                    TopHeader()
+                    MainContent()
+                }
+
             }
         }
 
@@ -82,9 +92,17 @@ fun TopHeader(totalPerPerson: Double = 0.0){
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Composable
 fun MainContent() {
+    val totalBillState = remember {
+        mutableStateOf("")
+    }
+    val validState = remember(totalBillState.value) {
+        totalBillState.value.trim().isNotEmpty()
+    }
+    val keyboardController =  LocalSoftwareKeyboardController.current
     Surface(modifier = Modifier
         .padding(2.dp)
         .fillMaxWidth(),
@@ -92,7 +110,18 @@ fun MainContent() {
         border = BorderStroke(width = 1.dp, color= Color.LightGray)
     ) {
         Column() {
+            InputField(valueState = totalBillState,
+                labelId = "Enter Bill",
+                enabled = true,
+                isSingleLine = true,
+                onAction = KeyboardActions{
+                    if (!validState) return@KeyboardActions
 
+                    keyboardController?.hide()
+
+                }
+
+                )
         }
     }
 }
