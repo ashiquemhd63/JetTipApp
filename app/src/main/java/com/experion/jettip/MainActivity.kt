@@ -54,10 +54,10 @@ class MainActivity : ComponentActivity() {
 
             // A surface container using the 'background' color from the theme
             MyApp {
-                Column() {
-                    TopHeader()
+
+
                     MainContent()
-                }
+
 
             }
         }
@@ -135,6 +135,7 @@ fun BillForm(
     val slidePositionState =  remember {
         mutableStateOf(0f)
     }
+
     Surface(
         modifier = Modifier
             .padding(2.dp)
@@ -146,6 +147,7 @@ fun BillForm(
             modifier = Modifier.padding(6.dp),
             verticalArrangement = Arrangement.Top
         ) {
+            TopHeader()
             InputField(
                 valueState = totalBillState,
                 labelId = "Enter Bill",
@@ -219,8 +221,16 @@ fun BillForm(
 
                     //Slider
                     Slider(value = slidePositionState.value, onValueChange = {newVal ->
+                        slidePositionState.value = newVal
                         Log.d("Slider","new val$newVal")
-                    })
+                    },
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                        steps = 10,
+                        onValueChangeFinished = {
+                            //TODO: After new value picked
+
+                        }
+                        )
 
                 }
 
