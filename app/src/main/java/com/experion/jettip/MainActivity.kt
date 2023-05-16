@@ -45,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.experion.jettip.components.InputField
 import com.experion.jettip.ui.theme.JetTipTheme
+import com.experion.jettip.utils.calculateTotalTip
 import com.experion.jettip.widgets.RoundIconButton
 
 class MainActivity : ComponentActivity() {
@@ -140,6 +141,9 @@ fun BillForm(
     }
     val range = IntRange(start = 1, endInclusive = 100)
     val tipPercentage = (sliderPositionState.value * 100).toInt()
+    val tipAmountState =  remember {
+        mutableStateOf(0.0)
+    }
     Surface(
         modifier = Modifier
             .padding(15.dp)
@@ -220,7 +224,7 @@ fun BillForm(
                     )
                     Spacer(modifier = Modifier.width(200.dp))
                     Text(
-                        text = "$33.00",
+                        text = "$ ${tipAmountState.value}",
                         modifier = Modifier.align(alignment = Alignment.CenterVertically)
                     )
 
@@ -235,9 +239,10 @@ fun BillForm(
                     //Slider
                     Slider(value = sliderPositionState.value, onValueChange = {newVal ->
                         sliderPositionState.value = newVal
-                        Log.d("Slider","new val$newVal")
+                        tipAmountState.value =
+                            calculateTotalTip(totalBill =  totalBillState.value.toDouble(), tipPercentage)
                     },
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                    modifier = Modifier.padding(),
 
                         onValueChangeFinished = {
                             //TODO: After new value picked
@@ -257,3 +262,4 @@ fun BillForm(
     }
 
 }
+
