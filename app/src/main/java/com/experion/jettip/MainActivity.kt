@@ -132,13 +132,14 @@ fun BillForm(
     }
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val slidePositionState =  remember {
+    val sliderPositionState =  remember {
         mutableStateOf(0f)
     }
     val splitByState = remember{
         mutableStateOf(1)
     }
     val range = IntRange(start = 1, endInclusive = 100)
+    val tipPercentage = (sliderPositionState.value * 100).toInt()
     Surface(
         modifier = Modifier
             .padding(15.dp)
@@ -202,8 +203,6 @@ fun BillForm(
                                 if (splitByState.value < range.last){
                                     splitByState.value += 1
                                 }
-
-
                             })
                     }
 
@@ -230,16 +229,16 @@ fun BillForm(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "33%")
+                    Text(text = "$tipPercentage %")
                     Spacer(modifier = Modifier.height(14.dp))
 
                     //Slider
-                    Slider(value = slidePositionState.value, onValueChange = {newVal ->
-                        slidePositionState.value = newVal
+                    Slider(value = sliderPositionState.value, onValueChange = {newVal ->
+                        sliderPositionState.value = newVal
                         Log.d("Slider","new val$newVal")
                     },
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                        steps = 10,
+
                         onValueChangeFinished = {
                             //TODO: After new value picked
 
